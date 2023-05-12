@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">EcoApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">Nome</string>
+    <string name="description">Descrição</string>
+    <string name="cost">Valor</string>
+    <string name="supplier">Nome do Fornecedor</string>
+    <string name="register">Cadastrar</string>
+    <string name="list">Listar</string>
+    <string name="definitionTitle">Definição</string>
+    <string name="definitionText">Um produto orgânico é “aquele obtido dentro de um sistema orgânico de produção agropecuária – ou extrativista sustentável – que beneficie o ecossistema local, proteja os recursos naturais, respeite as características socioeconômicas e culturais da comunidade local, preserve os direitos dos trabalhadores envolvidos e não utilize organismos geneticamente modificados nem químicos sintéticos”</string>
+    <string name="about">Sobre</string>
+    <string name="edit">Editar</string>
+</resources>
