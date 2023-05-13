@@ -1,4 +1,4 @@
-package com.example.ecoapp;
+package com.example.ecoapp.ui.list;
 
 import android.os.Bundle;
 
@@ -7,16 +7,25 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.example.ecoapp.R;
+import com.example.ecoapp.adapter.LineAdapter;
+import com.example.ecoapp.dao.AppDatabase;
+import com.example.ecoapp.dao.ProductDAO;
+import com.example.ecoapp.entity.Product;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RegisterFragment#newInstance} factory method to
+ * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RegisterFragment extends Fragment {
+public class ListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private ListView listProducts;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -24,7 +33,7 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RegisterFragment() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
@@ -34,11 +43,11 @@ public class RegisterFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment RegisterFragment.
+     * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance(String param1, String param2) {
-        RegisterFragment fragment = new RegisterFragment();
+    public static ListFragment newInstance(String param1, String param2) {
+        ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -58,7 +67,18 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        listProducts = rootView.findViewById(R.id.listProducts);
+
+        ProductDAO productDAO = AppDatabase.getInstance(getContext().getApplicationContext()).createProductDAO();
+
+        getAll(productDAO.getAllProduct());
+
+        return rootView;
+    }
+
+    protected void getAll(List<Product> products) {
+        listProducts.setAdapter(new LineAdapter(this, products));
     }
 }
