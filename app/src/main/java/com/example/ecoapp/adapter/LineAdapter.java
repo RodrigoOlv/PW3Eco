@@ -9,11 +9,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.ecoapp.R;
 import com.example.ecoapp.dao.AppDatabase;
 import com.example.ecoapp.dao.ProductDAO;
 import com.example.ecoapp.entity.Product;
+import com.example.ecoapp.ui.edit.EditFragment;
 import com.example.ecoapp.ui.list.ListFragment;
 
 import java.util.List;
@@ -22,12 +24,16 @@ public class LineAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private List<Product> products;
-    private ListFragment listProducts;
+    private Context context;
+    private ListFragment listFragment;
+    private FragmentManager fragmentManager;
 
-    public LineAdapter(ListFragment listProducts, List<Product> products) {
-        this.listProducts = listProducts;
+    public LineAdapter(Context context, List<Product> products, ListFragment listFragment, FragmentManager fragmentManager) {
+        this.context = context;
         this.products = products;
-        this.layoutInflater = LayoutInflater.from(listProducts.getContext());
+        this.listFragment = listFragment;
+        this.fragmentManager = fragmentManager;
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -58,6 +64,7 @@ public class LineAdapter extends BaseAdapter {
             viewHolder.productCost = convertView.findViewById(R.id.productCost);
             viewHolder.productSupplier = convertView.findViewById(R.id.productSupplier);
             viewHolder.btnDelete = convertView.findViewById(R.id.btnDelete);
+            viewHolder.btnEdit = convertView.findViewById(R.id.btnEdit);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -74,10 +81,17 @@ public class LineAdapter extends BaseAdapter {
         viewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductDAO productDAO = AppDatabase.getInstance(listProducts.getContext().getApplicationContext()).createProductDAO();
+                ProductDAO productDAO = AppDatabase.getInstance(context.getApplicationContext()).createProductDAO();
                 productDAO.delete(product);
                 refreshList(position);
-                Toast.makeText(listProducts.getContext(), "Produto excluído com sucesso!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Produto excluído com sucesso!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listFragment.openEditFragment(product, fragmentManager);
             }
         });
 
@@ -91,6 +105,7 @@ public class LineAdapter extends BaseAdapter {
         AppCompatTextView productCost;
         AppCompatTextView productSupplier;
         AppCompatButton btnDelete;
+        AppCompatButton btnEdit;
     }
 
     public void refreshList(int position) {

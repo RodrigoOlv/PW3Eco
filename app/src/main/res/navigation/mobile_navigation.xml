@@ -25,13 +25,13 @@
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.example.ecoapp.AboutFragment"
+        android:name="com.example.ecoapp.ui.about.AboutFragment"
         android:label="@string/about"
         tools:layout="@layout/fragment_about" />
 
     <fragment
         android:id="@+id/nav_edit"
-        android:name="com.example.ecoapp.EditFragment"
+        android:name="com.example.ecoapp.ui.edit.EditFragment"
         android:label="@string/edit"
         tools:layout="@layout/fragment_edit" />
 </navigation>
