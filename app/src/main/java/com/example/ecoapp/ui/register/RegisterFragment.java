@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.ecoapp.R;
 import com.example.ecoapp.dao.AppDatabase;
 import com.example.ecoapp.entity.Product;
+import com.google.android.material.snackbar.Snackbar;
 
 public class RegisterFragment extends Fragment {
 
@@ -71,7 +72,7 @@ public class RegisterFragment extends Fragment {
         // Inserting the product into the database
         AppDatabase.getInstance(getContext().getApplicationContext()).createProductDAO().insert(product);
 
-        Toast.makeText(getContext(), "Produto cadastrado!", Toast.LENGTH_SHORT).show();
+        Snackbar.make(getView(), "Produto cadastrado!", Snackbar.LENGTH_SHORT).show();
 
         // Clearing input fields after successful registration
         name.getText().clear();
