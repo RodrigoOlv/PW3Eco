@@ -24,4 +24,6 @@
     <string name="edit">Editar</string>
     <string name="code">Código</string>
     <string name="delete">Excluir</string>
+    <string name="btnDelete">excluir</string>
+    <string name="btnEdit">editar</string>
 </resources>

@@ -1,9 +1,15 @@
 package com.example.ecoapp.ui.register;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.ecoapp.R;
 import com.example.ecoapp.dao.AppDatabase;
+import com.example.ecoapp.dao.ProductDAO;
 import com.example.ecoapp.entity.Product;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -22,18 +29,14 @@ public class RegisterFragment extends Fragment {
     private AppCompatEditText description;
     private AppCompatEditText cost;
     private AppCompatEditText supplier;
+    private Context context;
 
-    public RegisterFragment() {
-        // Required empty public constructor
-    }
-
-    public static RegisterFragment newInstance() {
-        return new RegisterFragment();
-    }
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
+
+        context = getContext();
 
         name = view.findViewById(R.id.edtName);
         description = view.findViewById(R.id.edtDescription);
@@ -42,42 +45,35 @@ public class RegisterFragment extends Fragment {
 
         Button button = view.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("StaticFieldleak")
             @Override
             public void onClick(View v) {
-                registerProduct();
+                new AsyncTask<Void,Integer, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Void... voids) {
+                        ProductDAO productDAO = AppDatabase.getInstance(context).createProductDAO();
+                        Product product = new Product();
+                        product.setName(name.getText().toString());
+                        product.setDescription(description.getText().toString());
+                        product.setCost(cost.getText().toString());
+                        product.setSupplier(supplier.getText().toString());
+
+                        productDAO.insert(product);
+                        return product.getId();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer id) {
+                        if(id==null)
+                            Snackbar.make(view, "Erro ao inserir registro", Snackbar.LENGTH_LONG).show();
+                        else {
+                            Snackbar.make(view, "Nome informado = "+ name.getText().toString(), Snackbar.LENGTH_LONG).show();
+                            Navigation.findNavController(view).navigate(R.id.action_nav_registerFragment_to_nav_home);        }
+                    }
+                }.execute();
             }
         });
 
         return view;
-    }
-
-    private void registerProduct() {
-        String productName = name.getText().toString();
-        String productDescription = description.getText().toString();
-        String productCost = cost.getText().toString();
-        String productSupplier = supplier.getText().toString();
-
-        // Validating input fields
-        if (productName.isEmpty() || productDescription.isEmpty() || productCost.isEmpty() || productSupplier.isEmpty()) {
-            Toast.makeText(getContext(), "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Product product = new Product();
-        product.setName(productName);
-        product.setDescription(productDescription);
-        product.setCost(productCost);
-        product.setSupplier(productSupplier);
-
-        // Inserting the product into the database
-        AppDatabase.getInstance(getContext().getApplicationContext()).createProductDAO().insert(product);
-
-        Snackbar.make(getView(), "Produto cadastrado!", Snackbar.LENGTH_SHORT).show();
-
-        // Clearing input fields after successful registration
-        name.getText().clear();
-        description.getText().clear();
-        cost.getText().clear();
-        supplier.getText().clear();
     }
 }

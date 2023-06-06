@@ -1,5 +1,6 @@
 package com.example.ecoapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
+    private NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +39,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavigationUI.setupActionBarWithNavController(this, navController);
+
+        /**
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Aqui deveria abrir o fragmento de cadastro via atalho", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+                Navigation.findNavController(view).navigate(R.id.nav_register);
             }
         });
+         **/
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -69,7 +76,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_about:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Sobre");
-                builder.setMessage("Desafio 3 da disciplina de PW3, SSI, IFRS, Campus POA");
+                builder.setMessage("Rodrigo Leite de Oliveira\n\nDesafio 3 da disciplina de PW3, SSI, IFRS, Campus POA\nAplicação android usando fragmentos com persistência no Room");
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // não faz nada, apenas fecha o dialog
+                    }
+                });
                 builder.create().show();
                 return true;
 

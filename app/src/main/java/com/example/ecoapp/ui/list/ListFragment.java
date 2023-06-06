@@ -1,8 +1,14 @@
 package com.example.ecoapp.ui.list;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,74 +17,52 @@ import android.widget.ListView;
 
 import com.example.ecoapp.R;
 import com.example.ecoapp.adapter.LineAdapter;
+import com.example.ecoapp.adapter.MyAdapter;
 import com.example.ecoapp.dao.AppDatabase;
 import com.example.ecoapp.dao.ProductDAO;
 import com.example.ecoapp.entity.Product;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ListFragment extends Fragment {
 
-    private ListView listProducts;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ListFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(String param1, String param2) {
-        ListFragment fragment = new ListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private RecyclerView recyclerView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull  LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        listProducts = rootView.findViewById(R.id.listProducts);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
 
-        ProductDAO productDAO = AppDatabase.getInstance(getContext().getApplicationContext()).createProductDAO();
+        new AsyncTask<Void,Void, List<Product>>() {
 
-        getAll(productDAO.getAllProduct());
+            @Override
+            protected List<Product> doInBackground(Void... voids) {
+                ProductDAO productDAO = AppDatabase.getInstance(getContext()).createProductDAO();
+                return productDAO.getAllProduct();
+            }
+
+            @Override
+            protected void onPostExecute(List<Product> products) {
+                super.onPostExecute(products);
+                inicializaRecycler(products);
+            }
+
+        }.execute();
 
         return rootView;
     }
 
-    protected void getAll(List<Product> products) {
-        listProducts.setAdapter(new LineAdapter(this, products));
+    private void inicializaRecycler(List<Product> pessoas){
+        MyAdapter myAdapter = new MyAdapter(pessoas);//new MyAdapter(Pessoa.inicializaLista());
+        recyclerView.setAdapter(myAdapter);
+        //linha de código usada para otimizar o recycler
+        recyclerView.setHasFixedSize(true);
+
+        //configurar o gerenciador de layout
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        //definindo o layout do recycler
+        recyclerView.setLayoutManager(layoutManager);
     }
 }

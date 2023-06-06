@@ -16,10 +16,5 @@
             android:id="@+id/nav_list"
             android:icon="@drawable/ic_list"
             android:title="@string/list" />
-
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info"
-            android:title="@string/about" />
     </group>
 </menu>
